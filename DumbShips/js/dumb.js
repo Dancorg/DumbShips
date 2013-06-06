@@ -72,7 +72,7 @@ function nave(x,y,side,control){
 	shape.controllable = control;
 	shape.side = side;
 	shape.color = side==1?"0,100,250":"150,0,0";
-	shape.graphics.beginFill('rgba('+shape.color+',0.9)').drawPolyStar(0,0,10,3,0,0);
+	shape.graphics.beginStroke('rgba('+shape.color+',0.9)').drawPolyStar(0,0,10,3,0,0);
 	//shape.cache(-3,-3,10+6,10+6);
 	shape.dir = side==1?0:180;
 	shape.rotation = shape.dir;
@@ -87,11 +87,13 @@ function nave(x,y,side,control){
 			}
 			console.log(this.slow);
 			this.speed += this.acel - this.slow ;
+			if(this.speed < 0) this.speed = 0;
 			this.speed *= 1 - 0.01*Math.abs(this.right - this.left);
 			this.rotation += (this.right - this.left) * (5/(1+this.speed));
 		}
-		this.x += this.speed*Math.cos(this.rotation*(Math.PI/180));
-		this.y += this.speed*Math.sin(this.rotation*(Math.PI/180));
+		var rad = this.rotation*(Math.PI/180);
+		this.x += this.speed*Math.cos(rad);
+		this.y += this.speed*Math.sin(rad);
 	};
 	stage.addChild(shape);
 	ships.push(shape);
@@ -183,8 +185,8 @@ function handleKeyUp(e){
 
 function handleTouchStart(e){
 	e.preventDefault();
-	var canvasx = canvas.offsetLeft;
-	var canvasY = canvas.offsetTop;
+	/*var canvasx = canvas.offsetLeft;
+	var canvasY = canvas.offsetTop;*/
 	var	touches = e.changedTouches;
 	for(var i in touches){
 		var touch = touches[i];
@@ -199,8 +201,8 @@ function handleTouchStart(e){
 
 function handleTouchEnd(e){
 	e.preventDefault();
-	var canvasx = canvas.offsetLeft;
-	var canvasY = canvas.offsetTop;
+	/*var canvasx = canvas.offsetLeft;
+	var canvasY = canvas.offsetTop;*/
 	var	touches = e.changedTouches;
 	for(var i in touches){
 		var touch = touches[i];
