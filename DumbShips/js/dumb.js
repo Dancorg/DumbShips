@@ -65,6 +65,23 @@ function switchFullscreen(){
 	} 
 }
 
+function missile(x,y,vo,owner, angle){
+	var shape = new Shape();
+	shape.x = x;
+	shape.y = y;
+	shape.speed = vo;
+	shape.rotation = angle;
+	shape.color = owner.side==1?"0,150,255":"200,0,0";
+	shape.graphics.beginStroke('rgba('+shape.color+',0.95)').lineTo(x+5,y);
+	shape.update = function(i){
+		var rad = this.rotation*(Math.PI/180);
+		this.x += this.speed*Math.cos(rad);
+		this.y += this.speed*Math.sin(rad);
+	}
+	stage.addChild(shape);
+	return shape;
+}
+
 function nave(x,y,side,control){
 	var shape = new Shape();
 	shape.x = x;
@@ -72,7 +89,7 @@ function nave(x,y,side,control){
 	shape.controllable = control;
 	shape.side = side;
 	shape.color = side==1?"0,100,250":"150,0,0";
-	shape.graphics.beginFill('rgba('+shape.color+',0.9)').drawPolyStar(0,0,10,3,0,0);
+	shape.graphics.beginStroke('rgba('+shape.color+',0.9)').drawPolyStar(0,0,10,3,0,0);
 	//shape.cache(-3,-3,10+6,10+6);
 	shape.dir = side==1?0:180;
 	shape.rotation = shape.dir;
@@ -90,8 +107,12 @@ function nave(x,y,side,control){
 			this.speed *= 1 - 0.01*Math.abs(this.right - this.left);
 			this.rotation += (this.right - this.left) * (5/(1+this.speed));
 		}
-		this.x += this.speed*Math.cos(this.rotation*(Math.PI/180));
-		this.y += this.speed*Math.sin(this.rotation*(Math.PI/180));
+		var rad = this.rotation*(Math.PI/180);
+		this.x += this.speed*Math.cos(rad);
+		this.y += this.speed*Math.sin(rad);
+		if(this.attack){
+			missile(this.x, this.y,this.speed,this,this.rotation);
+		}
 	};
 	stage.addChild(shape);
 	ships.push(shape);
